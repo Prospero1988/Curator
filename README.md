@@ -1,71 +1,99 @@
-# SMILES Curator (`curator.py`)
+# curator.py
 
-Curates a CSV file containing SMILES strings by removing structural duplicates before QSPR/QSAR modeling.
+**Deduplicate a CSV containing SMILES strings by chemical identity** ߚ
 
-## Key Features
+## Description
+`curator.py` helps you clean up your chemical datasets by removing duplicate molecules based on their structural identity. It leverages robust cheminformatics tools (Open Babel, RDKit, MolVS) to ensure accurate deduplication, handling stereochemistry, tautomers, and even fuzzy similarity filters.
 
-- **Chemical identity deduplication** based on InChIKey.
-- **Stereochemistry merging**: `--nostereo` flag disables R/S, E/Z distinction.
-- **Tautomer canonicalization** (optional):
-  - `off` – raw SMILES (no normalization)
-  - `weak` – Open Babel 3.x (`--tautomer canonical`)
-  - `strong` – RDKit TautomerEnumerator
-  - `molvs` – [MolVS](https://github.com/mcs07/MolVS) canonicalizer (requires RDKit)
-- **Parallel processing**: multithreading via `--njobs`
-- **Graceful fallback**: uses RDKit if Open Babel is unavailable or fails.
-- **Verbose / silent mode**: enable progress bar with `tqdm`, or suppress logs with `--quiet`
+---
+
+## Features
+- **InChIKey identity**: Prefers Open Babel, falls back to RDKit.
+- **Stereo merge**: Use `--nostereo` to merge enantiomers/E,Z isomers.
+- **Tautomer handling**: `--tauto [off|weak|strong|molvs]`.
+- **Fuzzy filtering**: `--tanimoto-thres THRESH` to reject similar molecules.
+- **Parallel execution**: `--njobs N` to speed up processing.
+- **Reject logging**: Captures `Duplicate`, `ParseError`, `IndexError`, `FPError`, `Tanimoto`.
+
+---
+
+## Installation
+
+### Option 1: pip
+
+1. Clone the repo or download `curator.py`.
+2. Ensure you have Python 3.7+ installed.
+3. Install dependencies:
+   ```bash
+   pip install rdkit-pypi tqdm molvs
+   ```
+4. (Optional) Install Open Babel for preferred InChIKey/tautomer support:
+   ```bash
+   sudo apt-get install openbabel
+   ```
+
+### Option 2: Conda
+
+If you prefer Conda, use the provided `environment.yml` to create an environment named `data_curator`:
+
+```bash
+conda env create -f environment.yml -n data_curator
+conda activate data_curator
+```
+
+---
 
 ## Usage
 
 ```bash
-python curator.py data.csv 2 --nostereo --tauto molvs --njobs 4
+./curator.py input.csv SMILES_COLUMN [options]
 ```
 
-- `data.csv` – input file with SMILES
-- `2` – column number (1-based) with SMILES strings
-- `--nostereo` – merge stereoisomers
-- `--tauto molvs` – normalize tautomers using MolVS
-- `--njobs 4` – use 4 parallel workers
+### Positional arguments
+- `input.csv` &nbsp;&nbsp;Path to your input CSV file.
+- `SMILES_COLUMN` &nbsp;1-based index of the SMILES column.
 
-## Output Files
+### Options
+| Flag                        | Description                                                                                       |
+|-----------------------------|---------------------------------------------------------------------------------------------------|
+| `--nostereo`                | Merge enantiomers / E,Z stereoisomers.                                                           |
+| `--tauto {off,weak,strong,molvs}` | Tautomer handling:<br>• `off`: none<br>• `weak`: Open Babel<br>• `strong`: RDKit<br>• `molvs`: MolVS |
+| `--njobs N`                 | Number of worker processes (default: 1).                                                         |
+| `--tanimoto-thres THRESH`   | Reject rows with Tanimoto similarity ≥ THRESH (requires RDKit).                                   |
+| `--quiet`                   | Silence RDKit log spam.                                                                          |
 
-- `data_singled.csv` – curated, deduplicated data
-- `data_rejects.csv` – rows with invalid or unparsable SMILES (if any)
+---
 
-## Dependencies
+## Examples
 
-- [RDKit](https://www.rdkit.org/)
-- [Open Babel](http://openbabel.org/)
-- [MolVS](https://github.com/mcs07/MolVS) *(optional, for `--tauto molvs`)*
-- `tqdm` *(optional, for progress bar)*
+- **Basic deduplication**:
+  ```bash
+  ./curator.py molecules.csv 2
+  ```
+- **Merge stereoisomers & tautomers with MolVS**:
+  ```bash
+  ./curator.py molecules.csv 2 --nostereo --tauto molvs
+  ```
+- **Fuzzy filter similar molecules**:
+  ```bash
+  ./curator.py molecules.csv 1 --tanimoto-thres 0.95 --njobs 4
+  ```
+- **Full combo**:  
+  ```bash
+  python curator.py "inputs\molecules.csv 2 --nostereo --tauto "weak" --njobs 8 --tanimoto-thres 0.9
+  ```  
+---
 
-## Example
+## Output
 
-Given this input:
+- `input_singled.csv` – deduplicated dataset.
+- `input_rejects.csv` – rows rejected with reason codes.
 
-```csv
-ID,SMILES
-1,C1=CC=CC=C1
-2,c1ccccc1
-3,C1=CC=CN=C1
-4,C1=CC=CN=C1
-```
-
-Running:
-
-```bash
-python curator.py input.csv 2 --nostereo --tauto strong
-```
-
-Produces:
-
-- `input_singled.csv` with unique structures.
-- `input_rejects.csv` (if any errors or duplicates)
+---
 
 ## License
+MIT © 2025
 
-MIT License (your choice). See `LICENSE` file if applicable.
+---
 
-## Author
-
-Arkadiusz Leniak © 2025 – arkadiusz.leniak@gmail.com 
+*Enjoy cleaner datasets! And yes, your boss will be impressed.* ߘ
