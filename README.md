@@ -80,7 +80,7 @@ conda activate data_curator
   ```
 - **Full combo**:  
   ```bash
-  python curator.py "inputs\molecules.csv 2 --nostereo --tauto "weak" --njobs 8 --tanimoto-thres 0.9
+  python curator.py "molecules.csv 2 --nostereo --tauto "weak" --njobs 8 --tanimoto-thres 0.9
   ```  
 ---
 
