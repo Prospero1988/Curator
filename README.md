@@ -1,80 +1,36 @@
 # curator.py
 
-**Curator** is a Python script designed for preprocessing CSV files containing SMILES strings (molecular structures) in cheminformatics workflows. It helps clean and standardize your data before applying machine learning or statistical models, ensuring that you’re not feeding in duplicates, stereoisomers, outliers, or corrupted entries.
+**Deduplicate a CSV containing SMILES strings by chemical identity** ߚ
 
-This script is especially useful when working with large datasets from chemical databases like ChEMBL, PubChem, or ZINC.
-
----
-
-## 🔍 What Does It Do?
-
-### ✅ 1. Deduplication
-Rows are compared by their **InChIKey** (a unique identifier for molecules). You can choose how strict the deduplication should be:
-- **Default**: Considers full molecular identity.
-- `--nostereo`: Ignores stereochemistry (treats stereoisomers as the same compound).
-- `--tauto`: Handles tautomers (different forms of the same molecule) using one of the following engines:
-  - `off`: No canonicalization.
-  - `weak`: Use Open Babel.
-  - `strong`: Use RDKit.
-  - `molvs`: Use the MolVS library.
-
-### 🧪 2. Fuzzy Duplicate Removal (Optional)
-Use ECFP4 fingerprints to catch similar-but-not-identical compounds.
-```bash
---tanimoto-thres 0.95
-```
-Any compound with a Tanimoto similarity ≥ threshold to another will be discarded.
-
-### 📉 3. Outlier Detection (Optional)
-If your CSV file contains a numeric property (e.g., logP, bioactivity, etc.) in the **third column**, this script can automatically:
-- Parse the numbers (supports US `1,234.56` and EU `1.234,56` formats).
-- Compute **mean ± k×standard deviation**.
-- Filter out statistical outliers.
-- Optionally display histograms before/after filtering.
-
-Enable this using:
-```bash
---outliers 1.5
-```
-
-### ⚙️ 4. Parallel Execution
-Speed up the process using:
-```bash
---njobs 8
-```
+## Description
+`curator.py` helps you clean up your chemical datasets by removing duplicate molecules based on their structural identity. It leverages robust cheminformatics tools (Open Babel, RDKit, MolVS) to ensure accurate deduplication, handling stereochemistry, tautomers, and even fuzzy similarity filters.
 
 ---
 
-## 💡 Why Use It?
-
-Chemical datasets are **messy**:
-- You’ll often get duplicated compounds under different names or notations.
-- Tautomers and stereoisomers can lead to data leakage in ML models.
-- Some numeric fields come in European formats or have junk text like `"~1.5 ± 0.2"`.
-
-**Curator** handles all that. It’s fast, parallelized, and outputs:
-- A cleaned file: `yourfile_singled.csv`
-- A detailed reject log: `yourfile_rejects.csv`, tagging each issue:
-  - `Duplicate`, `ParseError`, `IndexError`, `FPError`, `Tanimoto`, `Outlier`, `ValueError`
+## Features
+- **InChIKey identity**: Prefers Open Babel, falls back to RDKit.
+- **Stereo merge**: Use `--nostereo` to merge enantiomers/E,Z isomers.
+- **Tautomer handling**: `--tauto [off|weak|strong|molvs]`.
+- **Fuzzy filtering**: `--tanimoto-thres THRESH` to reject similar molecules.
+- **Parallel execution**: `--njobs N` to speed up processing.
+- **Reject logging**: Captures `Duplicate`, `ParseError`, `IndexError`, `FPError`, `Tanimoto`.
 
 ---
 
-## 📦 Installation & Requirements
+## Installation
 
-### Required:
-- Python 3.7+
-- [Open Babel](http://openbabel.org/)
-- [RDKit](https://www.rdkit.org/)
+### Option 1: pip
 
-### Optional (recommended):
-- `molvs` (tautomer standardization)
-- `tqdm` (progress bars)
-- `matplotlib` (histograms)
-
-Install missing packages with:
-```bash
-pip install molvs tqdm matplotlib
-```
+1. Clone the repo or download `curator.py`.
+2. Ensure you have Python 3.7+ installed.
+3. Install dependencies:
+   ```bash
+   pip install rdkit-pypi tqdm molvs
+   ```
+4. (Optional) Install Open Babel for preferred InChIKey/tautomer support:
+   ```bash
+   sudo apt-get install openbabel
+   ```
 
 ### Option 2: Conda
 
@@ -87,7 +43,7 @@ conda activate data_curator
 
 ---
 
-## 🧪 Example Usage
+## Usage
 
 ```bash
 python curator.py molecules.csv 2 --nostereo --tauto weak --tanimoto-thres 0.9 --outliers 2.0 --njobs 8
@@ -95,27 +51,36 @@ python curator.py molecules.csv 2 --nostereo --tauto weak --tanimoto-thres 0.9 -
 
 ---
 
-## 📁 Output Files
+## Examples
 
-- ✅ `molecules_singled.csv` → final curated file
-- ⚠️  `molecules_rejects.csv` → detailed log of removed/invalid entries
+- **Basic deduplication**:
+  ```bash
+  ./curator.py molecules.csv 2
+  ```
+- **Merge stereoisomers & tautomers with MolVS**:
+  ```bash
+  ./curator.py molecules.csv 2 --nostereo --tauto molvs
+  ```
+- **Fuzzy filter similar molecules**:
+  ```bash
+  ./curator.py molecules.csv 1 --tanimoto-thres 0.95 --njobs 4
+  ```
+- **Full combo**:  
+  ```bash
+  python curator.py "molecules.csv 2 --nostereo --tauto "weak" --njobs 8 --tanimoto-thres 0.9
+  ```  
+---
+
+## Output
+
+- `input_singled.csv` – deduplicated dataset.
+- `input_rejects.csv` – rows rejected with reason codes.
 
 ---
 
-## 🧼 Clean Code
-
-- Follows [PEP 8](https://peps.python.org/pep-0008/)
-- Readable, modular structure
-- Compatible with both Unix and Windows systems
+## License
+MIT © 2025
 
 ---
 
-## 🧠 Ideal For:
-
-- Researchers using cheminformatics or QSAR modeling
-- Data preprocessing in drug discovery pipelines
-- ML practitioners cleaning molecular datasets
-
----
-
-Happy curation! 🧪🧹
+*Enjoy cleaner datasets! And yes, your boss will be impressed.* ߘ
