@@ -1,9 +1,27 @@
+# Curator
 
 **Curator** is a two-script toolkit for preparing raw structural data for machine learning and deep learning applications. Input files must contain molecular structures in SMILES format and a corresponding numerical property (e.g., logP, logD).
 
-The first script, `01_curator.py`, removes structural duplicates based on molecular identity—not by comparing SMILES strings directly, but by converting them into molecular objects and comparing their standardized representations. Optional filters include the removal of stereoisomers, tautomers, outliers, and structurally similar compounds using a configurable Tanimoto similarity threshold. When outlier removal is enabled, the script generates two histograms (before and after filtering) based on a user-defined standard deviation range. This script is particularly useful when preparing large datasets for modeling by reducing noise and redundancy.
+---
+### 01_curator.py
 
-The second `script, 02_grouper.py`, is intended for visual inspection of the dataset after curation. It groups compounds by exact property values (e.g., all compounds with logP = 2.45), then further splits each group by molecular weight. If any weight-based group contains more than one compound, it is flagged for visualization—potentially indicating unresolved isomers or tautomers. The script generates an HTML summary that displays the property-based and mass-based groupings, along with rendered chemical structures and their corresponding SMILES codes. This helps identify residual structural redundancies that may have passed through the initial filtering.
+The first script, `01_curator.py`, removes structural duplicates based on molecular identity—not by comparing SMILES strings directly, but by converting them into molecular objects and comparing their standardized representations. Optional filters include the removal of stereoisomers, tautomers, outliers, and structurally similar compounds using a configurable Tanimoto similarity threshold.
+
+Outlier removal is based on a simple statistical rule: the script calculates the mean and standard deviation of the selected numeric column (default: third column), and excludes all values outside the range defined by μ ± k·σ, where μ is the mean, σ the standard deviation, and k is a user-specified multiplier (typically 1.5). This allows for flexible trimming of extreme values in noisy datasets.
+
+When outlier filtering is enabled, the script also generates two histograms—before and after filtering—for visual inspection. This process is particularly useful when preparing large datasets for modeling by reducing redundancy and statistical noise.
+
+![Curator Diagram](repo_imgs/curator.png)
+
+### 02_grouper.py
+
+The second `script, 02_grouper.py`, is intended for visual inspection of the dataset after curation. 
+
+It groups compounds by exact property values (e.g., all compounds with logP = 2.45), then further splits each group by molecular weight. If any weight-based group contains more than one compound, it is flagged for visualization—potentially indicating unresolved isomers or tautomers. 
+
+The script generates an HTML summary that displays the property-based and mass-based groupings, along with rendered chemical structures and their corresponding SMILES codes. This helps identify residual structural redundancies that may have passed through the initial filtering.
+
+![Grouper Diagram](repo_imgs/grouper.png)
 
 ---
 
