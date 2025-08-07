@@ -99,15 +99,13 @@ def main():
         description="Process a CSV of molecules, calculate exact mass, group by a label, and generate an HTML visualizer."
     )
     parser.add_argument(
-        "--csv_path",
+        "csv_path",
         type=str,
-        required=True,
         help="Path to input CSV file containing SMILES and a label column."
     )
     parser.add_argument(
-        "--label_column",
+        "label_column",
         type=str,
-        required=True,
         help="Column name in CSV that contains the grouping parameter (e.g., 'logP')."
     )
     parser.add_argument(
