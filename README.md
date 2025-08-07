@@ -5,7 +5,7 @@
 ---
 ## 01_curator.py
 
-The first script, `01_curator.py`, removes structural duplicates based on molecular identity—not by comparing SMILES strings directly, but by converting them into molecular objects and comparing their standardized representations. Optional filters include the removal of stereoisomers, tautomers, outliers, and structurally similar compounds using a configurable Tanimoto similarity threshold.
+The first script, `01_curator.py`, removes structural duplicates based on molecular identity - not by comparing SMILES strings directly, but by converting them into molecular objects and comparing their standardized representations. Optional filters include the removal of stereoisomers, tautomers, outliers, and structurally similar compounds using a configurable Tanimoto similarity threshold.
 
 Outlier removal is based on a simple statistical rule: the script calculates the mean and standard deviation of the selected numeric column (default: third column), and excludes all values outside the range defined by μ ± k·σ, where μ is the mean, σ the standard deviation, and k is a user-specified multiplier (typically 1.5). This allows for flexible trimming of extreme values in noisy datasets.
 
