@@ -3,7 +3,7 @@
 **Curator** is a two-script toolkit for preparing raw structural data for machine learning and deep learning applications. Input files must contain molecular structures in SMILES format and a corresponding numerical property (e.g., logP, logD).
 
 ---
-### 01_curator.py
+## 01_curator.py
 
 The first script, `01_curator.py`, removes structural duplicates based on molecular identity—not by comparing SMILES strings directly, but by converting them into molecular objects and comparing their standardized representations. Optional filters include the removal of stereoisomers, tautomers, outliers, and structurally similar compounds using a configurable Tanimoto similarity threshold.
 
@@ -13,7 +13,9 @@ When outlier filtering is enabled, the script also generates two histograms—be
 
 ![Curator Diagram](repo_imgs/curator.png)
 
-### 02_grouper.py
+---
+
+## 02_grouper.py
 
 The second `script, 02_grouper.py`, is intended for visual inspection of the dataset after curation. 
 
