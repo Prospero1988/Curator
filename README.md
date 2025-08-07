@@ -11,7 +11,7 @@ Outlier removal is based on a simple statistical rule: the script calculates the
 
 When outlier filtering is enabled, the script also generates two histograms—before and after filtering—for visual inspection. This process is particularly useful when preparing large datasets for modeling by reducing redundancy and statistical noise.
 
-<p align="center"><img src="repo_imgs/curator.png", width="400px"/></p>
+<p align="center"><img src="repo_imgs/curator.png", width="800px"/></p>
 
 ---
 
@@ -23,7 +23,7 @@ It groups compounds by exact property values (e.g., all compounds with logP = 2.
 
 The script generates an HTML summary that displays the property-based and mass-based groupings, along with rendered chemical structures and their corresponding SMILES codes. This helps identify residual structural redundancies that may have passed through the initial filtering.
 
-<p align="center"><img src="repo_imgs/grouper.png", width="400px"/></p>
+<p align="center"><img src="repo_imgs/grouper.png", width="600px"/></p>
 
 ---
 
