@@ -103,7 +103,7 @@ After processing, the script generates two output files:
 To launch the grouping and visualization tool, use the following command:
 
 ```bash
-python 02_grouper.py --csv_path molecules_singled.csv --label_column logP --output_html grouped_output.html --img_dir img
+python 02_grouper.py 'molecules_singled.csv' 'logP' --output_html grouped_output.html --img_dir img
 ```
 
 This example:
@@ -119,8 +119,8 @@ This example:
 
 | Argument         | Required | Default                                | Description                                                                 |
 |------------------|----------|----------------------------------------|-----------------------------------------------------------------------------|
-| `--csv_path`     | Yes      | –                                      | Path to input CSV file containing SMILES and a numeric label.              |
-| `--label_column` | Yes      | –                                      | Column name used for grouping (e.g., `logP`, `logD`, etc.).                |
+| `csv_path`       | Yes      | –                                      | Path to input CSV file containing SMILES and a numeric label.              |
+| `label_column`   | Yes      | –                                      | Column name used for grouping (e.g., `logP`, `logD`, etc.).                |
 | `--output_html`  | No       | `grouped_output.html`                  | Name of the output HTML file.                                              |
 | `--img_dir`      | No       | `img`                                  | Folder where molecule images will be saved.                                |
 
