@@ -62,7 +62,7 @@ conda activate data_curator
 You can run the script from the command line using:
 
 ```bash
-python 01_curator.py input.csv 2 --tauto strong --nostereo --tanimoto-thres 0.95 --outliers 1.5 --njobs 4
+python 01_curator.py 'input.csv' 2 --tauto 'strong' --nostereo --tanimoto-thres 0.95 --outliers 1.5 --njobs 4
 ```
 
 This example performs:
@@ -103,7 +103,7 @@ After processing, the script generates two output files:
 To launch the grouping and visualization tool, use the following command:
 
 ```bash
-python 02_grouper.py 'molecules_singled.csv' 'logP' --output_html grouped_output.html --img_dir img
+python 02_grouper.py 'molecules_singled.csv' 'logP' --output_html 'grouped_output.html' --img_dir 'img'
 ```
 
 This example:
